@@ -43,18 +43,26 @@ impl From<&str> for Person {
 
         let mut split = s.split(',');
 
-        let Some(name) = split.next() else {
-            return Person::default();
+        let name = match split.next() {
+            Some(n) if n.len() != 0 => n,
+            Some(_) => {
+                return Person::default();
+            }
+            None => {
+                return Person::default();
+            }
         };
-        if name.len() == 0 {
-            return Person::default();
-        }
 
-        let Some(age) = split.next() else {
-            return Person::default();
-        };
-        let Ok(age) = age.parse() else {
-            return Person::default();
+        let age = match split.next() {
+            Some(age) => match age.parse() {
+                Ok(age) => age,
+                Err(_) => {
+                    return Person::default();
+                }
+            },
+            None => {
+                return Person::default();
+            }
         };
 
         if let Some(_) = split.next() {
